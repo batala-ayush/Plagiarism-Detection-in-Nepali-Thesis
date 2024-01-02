@@ -144,7 +144,7 @@ def preprocess(text):
 
 
 
-def compute_n_grams(text):
+def generate_n_grams(text):
     tokens=list(preprocess(text))
     ngrams = list(ngrams(tokens,2))
     sets = set(ngrams)
@@ -153,7 +153,7 @@ def compute_n_grams(text):
 
 
 
-def overlap_similarity(ngrams1, ngrams2):
+def compute_ngram_similarity(ngrams1, ngrams2):
     # Convert the bigrams lists to sets
     set1 = ngrams1
     set2 = ngrams2

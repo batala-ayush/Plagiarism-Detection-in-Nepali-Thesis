@@ -12,7 +12,7 @@ from .tfidf_similarity import compute_tfidfsimilarity
 from .fingerprint_similarity import compute_fingerprint_similarity
 from .word_similarity import compute_word_similarity
 from .ngram_similarity import compute_ngram_similarity
-from .models import tfiles, thesis_docx
+from .models import thesis_docx
 from .predict import predict_lab
 from .forms import DocxUploadForm
 from .highlight_paragraphs import highlight_paragraph
@@ -25,8 +25,12 @@ def thesis_upload_page(request):
     return render(request, 'thesis_upload.html')
 
 def thesis_upload_succesfull_page(request):
+    print('agadi')
+    print(request)
     if request.method == 'POST':
+        print('paxadi')
         print(request.FILES)
+
         got_thesis_file = request.FILES.get("thesis_file_docx")
         print(got_thesis_file)
         thesis_data = thesis_docx(thesis = got_thesis_file)

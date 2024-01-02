@@ -133,7 +133,7 @@ def ret_idf(arr_sen,sentences):
         idf_list.append(round(val,2))
     return idf_list
 
-def calculate_tfidfsimilarity(p1,p2):
+def compute_tfidfsimilarity(p1,p2):
     sentences=[p1,p2]
     sentences=preprocessing(sentences)
     union_list = all_union(sentences)

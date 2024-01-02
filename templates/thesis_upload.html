@@ -51,7 +51,7 @@
     </div>
 
     
-    <form action="thesis_upload" method="POST" enctype="multipart/form-data">
+    <form action="{% url 'thesis_upload_succesfull_page' %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="in_area">
         <label >thesis file:</label>
