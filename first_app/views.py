@@ -81,6 +81,8 @@ def plagiarism_check(request):
                 para = [para.text.strip() for para in document.paragraphs if para.text.strip()]  # Filter out empty or whitespace paragraphs
                 #paragraphs = get_paragraphs_from_word_file(document)
                 paragraphs_list.append(para)
+            
+            
 
 
             plagiarised_paragraphs =[]
