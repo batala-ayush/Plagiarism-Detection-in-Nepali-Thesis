@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plagiarism Detector</title>
+    <link rel="stylesheet" href="static/css/plag_check_styles.css">
+</head>
+
+    <body>
+        <div class="Navbar" style="display: flex; align-items: center;">
+            <ul style="list-style-type: none; margin: 0; padding: 0; margin-left: auto;">
+                <li>
+                <a href="/">Home</a>
+                </li>
+                <li>
+                <a href="/login">Log In</a>
+                </li>
+                <li>
+                <a href="/signin">Sign In</a>
+                </li>
+            </ul>
+        </div>
+    
+        <div class="center">
+            <h1>Plagiarism Checker</h1>
+            <form action="upload_pdf" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="txt_field">
+                    <input type="file" id="file-input" name="pdf_file" accept=".pdf" />
+                </div>
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+    </body>
+
+</html>
