@@ -1,26 +1,21 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-
 # Create your views here.
 
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render
+
+
+from docx import Document
+
 #importing the local preprocessing function
-from .tfidf_similarity import calculate_tfidfsimilarity
-from .fingerprint_similarity import fingerprint_similarity
-from .word_similarity import compute_wordsimilarity
-from .ngram_similarity import overlap_similarity
+from .tfidf_similarity import compute_tfidfsimilarity
+from .fingerprint_similarity import compute_fingerprint_similarity
+from .word_similarity import compute_word_similarity
+from .ngram_similarity import compute_ngram_similarity
 from .models import tfiles, thesis_docx
 from .predict import predict_lab
-from docx import Document
-
-
-from django.shortcuts import render
-from docx import Document
 from .forms import DocxUploadForm
-from .highlight_paragraph import process_plagiarized_paragraphs
-import io
-from .docx_to_paragraph import count_total_words,count_total_words_one_paragraph
-
-from .new_highlight import highlight_new_wala
+from .highlight_paragraphs import highlight_paragraph
 
 
 def homepage(request):
@@ -38,6 +33,18 @@ def thesis_upload_succesfull_page(request):
         thesis_data.save()
         return HttpResponse("Thesis Uploaded Sucessfully")
 
+
+def count_total_words(paragraphs):
+    total_words = 0
+    for paragraph in paragraphs:
+        total_words += len(paragraph.split())
+    return total_words
+
+
+def count_total_words_one_paragraph(paragraph):
+    total_words = 0
+    total_words += len(paragraph.split())
+    return total_words
 
 
 
