@@ -8,10 +8,12 @@ from django.shortcuts import render
 from docx import Document
 
 #importing the local preprocessing function
+
+from .ngram_similarity import compute_ngram_similarity,generate_n_grams
+from .fingerprint_similarity import compute_fingerprint_similarity,generate_fingerprint_sets
+from .word_similarity import compute_word_similarity,generate_word_sim_sets
 from .tfidf_similarity import compute_tfidfsimilarity
-from .fingerprint_similarity import compute_fingerprint_similarity
-from .word_similarity import compute_word_similarity
-from .ngram_similarity import compute_ngram_similarity
+
 from .models import thesis_docx
 from .predict import predict_lab
 from .forms import DocxUploadForm
@@ -25,23 +27,25 @@ def thesis_upload_page(request):
     return render(request, 'thesis_upload.html')
 
 def thesis_upload_succesfull_page(request):
-    print('agadi')
-    print(request)
+    #print('agadi')
+    #print(request)
     if request.method == 'POST':
-        print('paxadi')
-        print(request.FILES)
+        #print('paxadi')
+        #print(request.FILES)
 
         got_thesis_file = request.FILES.get("thesis_file_docx")
-        print(got_thesis_file)
+        #print(got_thesis_file)
         thesis_data = thesis_docx(thesis = got_thesis_file)
         thesis_data.save()
         return HttpResponse("Thesis Uploaded Sucessfully")
+    
+
 
 
 def count_total_words(paragraphs):
     total_words = 0
     for paragraph in paragraphs:
-        total_words += len(paragraph.split())
+        total_words += len(paragraph[3].split())
     return total_words
 
 
@@ -63,7 +67,7 @@ def plagiarism_check(request):
             sus_document = Document(docx_file)
 
             print(type(sus_document))
-            input_paragraphs = [para.text.strip() for para in sus_document.paragraphs if para.text.strip()]  # Filter out empty or whitespace paragraphs
+            input_paragraphs = [[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in sus_document.paragraphs if para.text.strip() and len(para.text.strip().split())>5]  # Filter out empty or whitespace paragraphs
             # paragraphs = get_paragraphs_from_word_file(docx_file)
             print(input_paragraphs)
             # print(type(paragraphs))
@@ -78,7 +82,7 @@ def plagiarism_check(request):
             for docx_file in docx_files:
                 document = Document(docx_file.thesis)
                 #paragraphs = [para.text for para in document.paragraphs]
-                para = [para.text.strip() for para in document.paragraphs if para.text.strip()]  # Filter out empty or whitespace paragraphs
+                para = [[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in document.paragraphs if para.text.strip() and len(para.text.strip().split())>5]  # Filter out empty or whitespace paragraphs
                 #paragraphs = get_paragraphs_from_word_file(document)
                 paragraphs_list.append(para)
             
@@ -95,20 +99,21 @@ def plagiarism_check(request):
                     is_label_one = 0
                     for para2 in para2_group:
                         #asma two paragraph aaucha
-                        ngram_sim = overlap_similarity(para1,para2)
-                        tfidf_sim = calculate_tfidfsimilarity(para1,para2)
-                        finger_sim = fingerprint_similarity(para1,para2)
-                        word_sim = compute_wordsimilarity(para1,para2)
+                        ngram_sim = compute_ngram_similarity(para1[0],para2[0])
+                        
+                        finger_sim = compute_fingerprint_similarity(para1[1],para2[1])
+                        word_sim = compute_word_similarity(para1[2],para2[2])
+                        tfidf_sim = compute_tfidfsimilarity(para1[3],para2[3]) #4th item in list is paragraph 
                         label = predict_lab(ngram_sim,finger_sim,word_sim,tfidf_sim)
                         avg_feature_sim = (ngram_sim + tfidf_sim + finger_sim + word_sim)/4
                         if(avg_feature_sim > max_avg_feature_sim and label == 1):
                             max_avg_feature_sim = avg_feature_sim
-                            max_sim_database_paragraph = para2
+                            max_sim_database_paragraph = para2[3]
                         
                         if(label == 1):
                             is_label_one = 1
                     if is_label_one ==1 :
-                        my_dict = {"paragraph": para1 ,"database_paragraph":max_sim_database_paragraph, "source":file_names[paragraphs_list_counter], "average_feature_score": max_avg_feature_sim}
+                        my_dict = {"paragraph": para1[3] ,"database_paragraph":max_sim_database_paragraph, "source":file_names[paragraphs_list_counter], "average_feature_score": max_avg_feature_sim}
                         plagiarised_paragraphs.append(my_dict)
                         #asma lekhne sentence wala code
                         #
@@ -170,11 +175,12 @@ def plagiarism_check(request):
             print(grouped_paragraphs)
 
             #highlight wala
-            highlight_new_wala(grouped_paragraphs,sus_document,docx_file_title_name,docx_file_author_name)
+            highlight_paragraph(grouped_paragraphs,sus_document,docx_file_title_name,docx_file_author_name)
             
-            context = {'result_list': similarity_data}
-            return render(request, 'try1.html', context)
+            #context = {'result_list': similarity_data}
+            #return render(request, 'try1.html', context)
+            return HttpResponse("Plagiarism Checking Sucessfull.")
     else:
         form = DocxUploadForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'thesis_upload_for_checking.html', {'form': form})
 

@@ -372,13 +372,13 @@ def modify_suspicious_paragraph(filtered_sus_paragraph,orginal_words_list):
 
 
 
-def jaccard_similarity(paragraph1, paragraph2):
+def jaccard_similarity_modified(paragraph1, paragraph2):
     s1 = set(paragraph1)
     s2 = set(paragraph2)
-    return float(len(s1.intersection(s2)) / min(len(s1),len(s2)))
+    return float(len(s1.intersection(s2)) / len(s1))
 
 
-def gemerate_word_sim_sets(paragraph):
+def generate_word_sim_sets(paragraph):
     sentences = sentence_tokenize(paragraph)
     
     tok_sentences = word_tokenize(sentences)
@@ -400,6 +400,6 @@ def gemerate_word_sim_sets(paragraph):
 def compute_word_similarity(filtered_sus_paragraph,filtered_ori_paragraph):
     orginal_words_list = create_original_wordlist(filtered_ori_paragraph)
     modified_sus_paragraph = modify_suspicious_paragraph(filtered_sus_paragraph,orginal_words_list)
-    jac_similarity = jaccard_similarity(modified_sus_paragraph,filtered_ori_paragraph)
-    result = round(jac_similarity,3)
+    jac_similarity_mod = jaccard_similarity_modified(modified_sus_paragraph,filtered_ori_paragraph)
+    result = round(jac_similarity_mod,3)
     return result

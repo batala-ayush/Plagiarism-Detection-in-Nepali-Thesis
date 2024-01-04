@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload and Extract DOCX</title>
+</head>
+<body>
+    <h1>Upload a DOCX File</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload and Extract</button>
+    </form>
+</body>
+</html>

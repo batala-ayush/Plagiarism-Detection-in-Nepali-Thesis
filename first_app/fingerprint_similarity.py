@@ -183,15 +183,6 @@ def winnowing(text, k, w):
     winnowed_hashes = winnow(shingles, w)
     return winnowed_hashes
 
-def overlap_similarity(set1, set2):
-    numerator = len(set1.intersection(set2))
-    min_len = min(len(set1), len(set2))
-    if min_len==0:
-        overlap_similarity=0
-    else:
-        overlap_similarity = numerator/min_len
-    return overlap_similarity
-
 def generate_fingerprint_sets(text1):
     shingle_length = 5
     winnowing_window =5
@@ -201,7 +192,8 @@ def generate_fingerprint_sets(text1):
 
 
 
-def compute_fingerprint_similarity(f1,f2) :
-    fingerprint_sim = overlap_similarity(f1,f2)
-    result = round(fingerprint_sim,3)
+def compute_fingerprint_similarity(set1,set2) :
+    numerator = len(set1.intersection(set2))
+    jac_similarity_mod = numerator/len(set1)
+    result = round(jac_similarity_mod,3)
     return result

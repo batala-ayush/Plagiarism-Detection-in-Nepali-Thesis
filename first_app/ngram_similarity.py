@@ -146,8 +146,8 @@ def preprocess(text):
 
 def generate_n_grams(text):
     tokens=list(preprocess(text))
-    ngrams = list(ngrams(tokens,2))
-    sets = set(ngrams)
+    ngrams_set = list(ngrams(tokens,2))
+    sets = set(ngrams_set)
     return sets 
 
 
@@ -158,13 +158,10 @@ def compute_ngram_similarity(ngrams1, ngrams2):
     set1 = ngrams1
     set2 = ngrams2
     numerator = len(set1.intersection(set2))
-    min_len = min(len(set1), len(set2))
-    if min_len==0:
-        overlap_similarity=0
-    else:
-        overlap_similarity = numerator/min_len
-        overlap_similarity = round(overlap_similarity,3)
-    return overlap_similarity
+    jac_similarity_mod = numerator/len(set1)
+    result = round(jac_similarity_mod,3)
+        
+    return result
 
 
 

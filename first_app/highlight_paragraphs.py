@@ -116,7 +116,7 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
                     # Clear the original paragraph text
                     paragraph.clear()
                     #call sentence pattalauni function
-                    indexes = find_common_sequences(input_para, database_para, threshold=2)
+                    indexes = find_common_sequences(input_para, database_para, threshold=3)
                     print(indexes)
                     print(len(para_text))
                     print(para_text)
@@ -181,7 +181,7 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
     ana_table.cell(0,0).text = "Plagiarized Percentage"
     ana_table.cell(0,0).paragraphs[0].runs[0].bold = True
     ana_table.cell(0,0).paragraphs[0].runs[0].font.size = Pt(12) 
-    ana_table.cell(0,1).text = str(total_plagiarism) +"%"
+    ana_table.cell(0,1).text = str(round(total_plagiarism,3)) +"%"
 
     #doc.add_heading('Plagiarism Analysis').alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     sources = doc.add_paragraph('Sources')
@@ -210,4 +210,4 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
         
         for cell in source_table.rows[i].cells:
             cell.paragraphs[0].runs[0].font.color.rgb = RGBColor(color[i-1][0], color[i-1][1], color[i-1][2])
-    doc.save('short2_modified.docx')
+    doc.save('plag_check_modified.docx')
