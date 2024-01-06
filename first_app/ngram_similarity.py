@@ -158,7 +158,10 @@ def compute_ngram_similarity(ngrams1, ngrams2):
     set1 = ngrams1
     set2 = ngrams2
     numerator = len(set1.intersection(set2))
-    jac_similarity_mod = numerator/len(set1)
+    if len(set1)!=0:
+        jac_similarity_mod = numerator/len(set1)
+    else:
+        jac_similarity_mod = 0
     result = round(jac_similarity_mod,3)
         
     return result

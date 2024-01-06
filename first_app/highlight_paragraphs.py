@@ -119,8 +119,10 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
                     indexes = find_common_sequences(input_para, database_para, threshold=3)
                     print(indexes)
                     print(len(para_text))
+                    print("deuta paragraph")
                     print(para_text)
                     print(target_paragraph)
+                    print("deuta paragraph")
                     for index in indexes:
                         if index['copied'] is True:
                             print(index['sen_pos'])
@@ -204,8 +206,8 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
     # Add content to the cells (optional)
     for i in range(1,number_of_source+1):
         source_table.cell(i,0).text = str(i)
-        source_table.cell(i,1).text = final_plagiarised_paragraphs_grouped_sources[i-1]['source']
-        source_table.cell(i,2).text = final_plagiarised_paragraphs_grouped_sources[i-1]['author']+str(i)
+        source_table.cell(i,1).text = final_plagiarised_paragraphs_grouped_sources[i-1]['source']['name']
+        source_table.cell(i,2).text = final_plagiarised_paragraphs_grouped_sources[i-1]['source']['author']
         source_table.cell(i,3).text = str(round((final_plagiarised_paragraphs_grouped_sources[i-1]['percentage']),2)) + '%'
         
         for cell in source_table.rows[i].cells:

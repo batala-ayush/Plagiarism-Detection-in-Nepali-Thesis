@@ -57,11 +57,6 @@ def remove_english_from_nepali(nepali_text):
     # Return the cleaned Nepali text
     return nepali_text
 
-def preprocess(text):
-    tokens = word_tokenize(text)
-    stemmed_tokens = word_stemmer(tokens)
-    removed_tokens=stopword_removal(stemmed_tokens)
-    return removed_tokens
 
 
 def preprocessing(sentences):

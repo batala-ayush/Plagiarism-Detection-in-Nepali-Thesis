@@ -375,7 +375,12 @@ def modify_suspicious_paragraph(filtered_sus_paragraph,orginal_words_list):
 def jaccard_similarity_modified(paragraph1, paragraph2):
     s1 = set(paragraph1)
     s2 = set(paragraph2)
-    return float(len(s1.intersection(s2)) / len(s1))
+    if len(s1)!=0:
+        jac_similarity_mod = len(s1.intersection(s2))/len(s1)
+    else:
+        jac_similarity_mod = 0
+    result = round(jac_similarity_mod,3)
+    return result
 
 
 def generate_word_sim_sets(paragraph):

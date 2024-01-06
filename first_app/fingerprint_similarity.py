@@ -194,6 +194,9 @@ def generate_fingerprint_sets(text1):
 
 def compute_fingerprint_similarity(set1,set2) :
     numerator = len(set1.intersection(set2))
-    jac_similarity_mod = numerator/len(set1)
+    if len(set1)!=0:
+        jac_similarity_mod = numerator/len(set1)
+    else:
+        jac_similarity_mod = 0
     result = round(jac_similarity_mod,3)
     return result
