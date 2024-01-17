@@ -5,9 +5,6 @@ from docx.shared import RGBColor
 from docx.enum.text import WD_UNDERLINE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Pt
-# Load an existing DOCX document
-#doc = docx.Document('short2.docx')
-
 
 
 def random_rgb_color():
@@ -17,6 +14,7 @@ def random_rgb_color():
         blue = random.randint(100, 255) 
         return red,green,blue
     
+
 
 def find_common_sequences(string1, string2,threshold):
     # Split the strings into words
@@ -41,9 +39,9 @@ def find_common_sequences(string1, string2,threshold):
             else:
                 # Check if the current sequence is longer than the threshold
                 if len(current_sequence) >= threshold:
-                    text = ' '.join(current_sequence)
-                    print(text)
-                    print(len(text))
+                    #text = ' '.join(current_sequence)
+                    #print(text)
+                    #print(len(text))
                     common_sequences.append({
                         'sequence': ' '.join(current_sequence),
                         'start_index': current_start_index,
@@ -61,8 +59,8 @@ def find_common_sequences(string1, string2,threshold):
         })
         
     result_list = []
-    print(common_sequences)
-    print("--------")
+    #print(common_sequences)
+    #print("--------")
     # Initialize a variable to keep track of the end value of the previous dictionary
     prev_end = None
     if common_sequences:
@@ -79,9 +77,14 @@ def find_common_sequences(string1, string2,threshold):
 
             result_list.append({'copied': True,'sen_pos':[start, end]})
             prev_end = end
+        if common_sequences[-1]['end_index'] != len(string1):
+            result_list.append({'copied': False,'sen_pos':[common_sequences[-1]['end_index'], len(string1)]})
+            
+            
 
         return result_list
     else:
+        result_list.append({'copied': False,'sen_pos':[0, len(string1)]})
         return result_list
     
 
@@ -96,46 +99,56 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
         red,green,blue = random_rgb_color()
         color.append((red,green,blue))
         total_plagiarism = total_plagiarism + sources['percentage']
-        count = 0
-        for target_paragraph in sources['input_paragraphs']:
-            input_para = target_paragraph # yo rw tala ko paragraph use garni sentence level index patta lauda
-            database_para = sources['database_paragraphs'][count]
-            count = count + 1
-            print(target_paragraph)
+        #count = 0
+        for input_paragraph,database_paragraph in zip(sources['input_paragraphs'],sources['database_paragraphs']):
+            input_para = input_paragraph # yo rw tala ko paragraph use garni sentence level index patta lauda
+            database_para = database_paragraph
+
+            #print('-----------------')
+            #print(input_para)
+            #print(database_para)
+            #print('-----------------')
+            #print(target_paragraph)
+            print()
+            #count = count + 1
+            #print(target_paragraph)
             print("\n")
             
             # Iterate through paragraphs to find the paragraph containing the specific text
             for paragraph in doc.paragraphs:
-                print(paragraph.text)
+                #print(paragraph.text)
                 print("\n")
                 # Search for the target text within the paragraph
-                if target_paragraph in paragraph.text:
+                if input_para in paragraph.text:
                     para_text = paragraph.text
                     print(paragraph.text)
                     print("\n")
                     # Clear the original paragraph text
                     paragraph.clear()
                     #call sentence pattalauni function
-                    indexes = find_common_sequences(input_para, database_para, threshold=3)
-                    print(indexes)
-                    print(len(para_text))
-                    print("deuta paragraph")
-                    print(para_text)
-                    print(target_paragraph)
-                    print("deuta paragraph")
-                    for index in indexes:
-                        if index['copied'] is True:
-                            print(index['sen_pos'])
-                            run = paragraph.add_run(para_text[index['sen_pos'][0]:index['sen_pos'][1]])
-                            run.font.color.rgb = RGBColor(red, green, blue)
-                            run.font.underline = WD_UNDERLINE.THICK
-                        else:
-                            run = paragraph.add_run(para_text[index['sen_pos'][0]:index['sen_pos'][1]])
-                            run.font.color.rgb = RGBColor(red, green, blue)
-                    if indexes[-1]['sen_pos'][1]!= len(para_text):
-                        run = paragraph.add_run(para_text[index['sen_pos'][1]:len(para_text)])
+                    indexes = find_common_sequences(para_text, database_para, threshold=3)
+                    #print(indexes)
+                    #print(len(para_text))
+                    #print("deuta paragraph")
+                    #print(para_text)
+                    #print(database_para)
+                    #print("deuta paragraph")
+                    if indexes == []:
+                        run = paragraph.add_run(para_text)
                         run.font.color.rgb = RGBColor(red, green, blue)
-                    break
+                    else:
+
+
+                        for index in indexes:
+                            if index['copied'] is True:
+                                #print(index['sen_pos'])
+                                run = paragraph.add_run(para_text[index['sen_pos'][0]:index['sen_pos'][1]])
+                                run.font.color.rgb = RGBColor(red, green, blue)
+                                run.font.underline = WD_UNDERLINE.THICK
+                            else:
+                                run = paragraph.add_run(para_text[index['sen_pos'][0]:index['sen_pos'][1]])
+                                run.font.color.rgb = RGBColor(red, green, blue)
+                        break
 
     doc.add_page_break()
 
@@ -212,4 +225,4 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
         
         for cell in source_table.rows[i].cells:
             cell.paragraphs[0].runs[0].font.color.rgb = RGBColor(color[i-1][0], color[i-1][1], color[i-1][2])
-    doc.save('plag_check_modified.docx')
+    doc.save('doc_modified.docx')

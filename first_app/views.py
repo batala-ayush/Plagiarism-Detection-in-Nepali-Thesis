@@ -13,6 +13,7 @@ from .ngram_similarity import compute_ngram_similarity,generate_n_grams
 from .fingerprint_similarity import compute_fingerprint_similarity,generate_fingerprint_sets
 from .word_similarity import compute_word_similarity,generate_word_sim_sets
 from .tfidf_similarity import compute_tfidfsimilarity
+import time
 
 
 
@@ -60,23 +61,24 @@ def count_total_words_one_paragraph(paragraph):
 
 def plagiarism_check(request):
     if request.method == 'POST':
+        start_time = time.time()
         #form = DocxUploadForm(request.POST, request.FILES)
         #if form.is_valid():
         docx_file = request.FILES.get("thesis_file_docx")
         suspicious_author_name = request.POST.get("author_name")
         #docx_file = request.FILES['docx_file']
         suspicious_docx_file_title_name = docx_file.name
-        print(suspicious_docx_file_title_name)
-        print(suspicious_author_name)
-        print("yesko mathi")
+        #print(suspicious_docx_file_title_name)
+        #print(suspicious_author_name)
+        #print("yesko mathi")
         #docx_file_author_name = 'Inputed_Thesis_Author_Name'
-        print(type(docx_file))
+        #print(type(docx_file))
         sus_document = Document(docx_file)
 
-        print(type(sus_document))
+        #print(type(sus_document))
         input_paragraphs = [[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in sus_document.paragraphs if para.text.strip() and len(para.text.strip().split())>5]  # Filter out empty or whitespace paragraphs
         # paragraphs = get_paragraphs_from_word_file(docx_file)
-        print(input_paragraphs)
+        #print(input_paragraphs)
         # print(type(paragraphs))
         #return render(request, 'result.html', {'paragraphs': paragraphs})
 
@@ -108,10 +110,10 @@ def plagiarism_check(request):
                 for para2 in para2_group['paragraphs']:
                     #asma two paragraph aaucha
                     ngram_sim = compute_ngram_similarity(para1[0],para2[0])
-                    print(para1[3])
-                    print(para2[3])
-                    print(para1[1])
-                    print(para2[1])
+                    #print(para1[3])
+                    #print(para2[3])
+                    #print(para1[1])
+                    #print(para2[1])
                     finger_sim = compute_fingerprint_similarity(para1[1],para2[1])
                     
                     word_sim = compute_word_similarity(para1[2],para2[2])
@@ -138,7 +140,7 @@ def plagiarism_check(request):
             #         print(label)
             #     print("changeeeeeeeeeeee1111111")
             # print("changeeeeeeeeeeee22222222")
-        print(plagiarised_paragraphs)
+        #print(plagiarised_paragraphs)
         #return render(request, 'try.html', {'paragraphs_list': paragraphs_list})
         #for highlighting docx
         #output_file_path = "highlighted_document.docx"  # Replace with the desired output file path
@@ -184,10 +186,20 @@ def plagiarism_check(request):
                     break
             if(contains_source == False):
                 grouped_paragraphs.append({'input_paragraphs':[entry['input_paragraph']],'source': entry['source'],'database_paragraphs':[entry['database_paragraph']], 'percentage': sim_index})
-        print(grouped_paragraphs)
+        #print("-------------------------")
+        #print(grouped_paragraphs)
+        #print("----------------------------------")
 
         #highlight wala
         highlight_paragraph(grouped_paragraphs,sus_document,suspicious_docx_file_title_name,suspicious_author_name)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        minutes, seconds = divmod(execution_time, 60)
+
+
+        print("--------------------------")
+        print(f"Execution time: {int(minutes)} minutes and {round(seconds, 2)} seconds")
+        print("--------------------------")
         
         #context = {'result_list': similarity_data}
         #return render(request, 'try1.html', context)
