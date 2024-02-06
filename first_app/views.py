@@ -17,6 +17,7 @@ import time
 
 
 
+
 from .models import thesis_docx
 from .predict import predict_lab
 #from .forms import DocxUploadForm
@@ -38,8 +39,19 @@ def thesis_upload_succesfull_page(request):
 
         got_thesis_file = request.FILES.get("thesis_file_docx")
         got_author_name = request.POST.get("author_name")
+        document = Document(got_thesis_file)
+        input_paragraphs = [[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in document.paragraphs if para.text.strip() and len(para.text.strip().split())>5]  # Filter out empty or whitespace paragraphs
+        #input_paragraphs_json = json.loads(str(input_paragraphs))
         #print(got_thesis_file)
-        thesis_data = thesis_docx(thesis = got_thesis_file,author = got_author_name)
+        print(input_paragraphs) 
+
+        #import pprint
+        #input_paragraphs_string = pprint.pformat(input_paragraphs)
+        #import ast
+        #input_paragraphs_after = ast.literal_eval(input_paragraphs_string)
+        #if input_paragraphs == input_paragraphs_after:
+        #    print(True)
+        thesis_data = thesis_docx.objects.create(thesis = got_thesis_file,author = got_author_name,paragraphs = input_paragraphs)
         thesis_data.save()
         return HttpResponse("Thesis Uploaded Sucessfully")
     
@@ -81,6 +93,7 @@ def plagiarism_check(request):
         #print(input_paragraphs)
         # print(type(paragraphs))
         #return render(request, 'result.html', {'paragraphs': paragraphs})
+        
 
         docx_files = thesis_docx.objects.all()
         #file_names = [docx_file.thesis.name for docx_file in docx_files]
@@ -89,9 +102,12 @@ def plagiarism_check(request):
         paragraphs_list = []
 
         for docx_file in docx_files:
-            document = Document(docx_file.thesis)
+            print(docx_file.paragraphs)
+            #document = Document(docx_file.thesis)
             #paragraphs = [para.text for para in document.paragraphs]
-            para ={"paragraphs":[[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in document.paragraphs if para.text.strip() and len(para.text.strip().split())>5],"source":{'name':docx_file.thesis.name,'author':docx_file.author}}  # Filter out empty or whitespace paragraphs
+            #para ={"paragraphs":[[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in document.paragraphs if para.text.strip() and len(para.text.strip().split())>5],"source":{'name':docx_file.thesis.name,'author':docx_file.author}}  # Filter out empty or whitespace paragraphs
+            para ={"paragraphs":docx_file.paragraphs,"source":{'name':docx_file.thesis.name,'author':docx_file.author}}  # Filter out empty or whitespace paragraphs
+
             #paragraphs = get_paragraphs_from_word_file(document)
             paragraphs_list.append(para)
         
@@ -109,6 +125,9 @@ def plagiarism_check(request):
                 is_label_one = 0
                 for para2 in para2_group['paragraphs']:
                     #asma two paragraph aaucha
+                    #print('--------------------------------------------------------------')
+                    #print(para2[0])
+                    #print("----------------------------------------------------")
                     ngram_sim = compute_ngram_similarity(para1[0],para2[0])
                     #print(para1[3])
                     #print(para2[3])
@@ -200,6 +219,9 @@ def plagiarism_check(request):
         print("--------------------------")
         print(f"Execution time: {int(minutes)} minutes and {round(seconds, 2)} seconds")
         print("--------------------------")
+
+
+        print(input_paragraphs[0])
         
         #context = {'result_list': similarity_data}
         #return render(request, 'try1.html', context)

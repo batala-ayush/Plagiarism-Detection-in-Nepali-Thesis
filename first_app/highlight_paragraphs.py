@@ -4,7 +4,7 @@ import random
 from docx.shared import RGBColor
 from docx.enum.text import WD_UNDERLINE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from docx.shared import Pt
+from docx.shared import Pt, Inches
 
 
 def random_rgb_color():
@@ -121,8 +121,8 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
                 # Search for the target text within the paragraph
                 if input_para in paragraph.text:
                     para_text = paragraph.text
-                    print(paragraph.text)
-                    print("\n")
+                    #print(paragraph.text)
+                    #print("\n")
                     # Clear the original paragraph text
                     paragraph.clear()
                     #call sentence pattalauni function
@@ -170,19 +170,32 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
 
     # Create a table with 2 rows and 2 columns
     table = doc.add_table(rows=2, cols=2)
+    table.autofit = False
 
     # Set the alignment of the table to center
     table.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
     # Add content to the table cells
-    table.cell(0, 0).text = "Thesis Title"
+    table.cell(0,0).text = "Thesis Title"
     table.cell(0,0).paragraphs[0].runs[0].bold = True
     table.cell(0,0).paragraphs[0].runs[0].font.size = Pt(12)
-    table.cell(0, 1).text = docx_file_title_name
-    table.cell(1, 0).text = "Author"
+    table.cell(0,0).paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    table.cell(0,1).text = docx_file_title_name
+    #table.cell(0,1).paragraphs[0].runs[0].font.size = Pt(10)
+    table.cell(0,1).paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    table.cell(1,0).text = "Author"
     table.cell(1,0).paragraphs[0].runs[0].bold = True
     table.cell(1,0).paragraphs[0].runs[0].font.size = Pt(12)
-    table.cell(1, 1).text = docx_file_author_name
+    table.cell(1,0).paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    table.cell(1,1).text = docx_file_author_name
+    #table.cell(1,1).paragraphs[0].runs[0].font.size = Pt(10)
+    table.cell(1,1).paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
+    # Set widths for the cells individually
+    table.cell(0, 0).width = Inches(2) 
+    table.cell(0, 1).width = Inches(4) 
+    table.cell(1, 0).width = Inches(2)  
+    table.cell(1, 1).width = Inches(4)  
 
     # Add Plagiarism Analysis heading
     #doc.add_heading('Plagiarism Analysis').alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
@@ -193,10 +206,21 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
     analysis.runs[0].font.color.rgb = blue_color
     # to display total plag percentage
     ana_table = doc.add_table(rows=1, cols=2)
+    ana_table.autofit = False
+
+    ana_table.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
     ana_table.cell(0,0).text = "Plagiarized Percentage"
     ana_table.cell(0,0).paragraphs[0].runs[0].bold = True
-    ana_table.cell(0,0).paragraphs[0].runs[0].font.size = Pt(12) 
+    ana_table.cell(0,0).paragraphs[0].runs[0].font.size = Pt(12)
+    ana_table.cell(0,0).paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT 
     ana_table.cell(0,1).text = str(round(total_plagiarism,3)) +"%"
+    #ana_table.cell(0,1).paragraphs[0].runs[0].font.size = Pt(10)
+    ana_table.cell(0,1).paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
+    #adjusting col width
+    ana_table.cell(0, 0).width = Inches(2)  # Adjust the value based on your preference
+    ana_table.cell(0, 1).width = Inches(4)  # Adjust the value based on your preference
 
     #doc.add_heading('Plagiarism Analysis').alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     sources = doc.add_paragraph('Sources')
@@ -206,11 +230,14 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
     sources.runs[0].font.color.rgb = blue_color
     # table to display sources
     source_table = doc.add_table(rows=number_of_source+1, cols=4)
+    source_table.autofit = False
+    source_table.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
     print(number_of_source)
-    source_table.cell(0,0).text = "Index"
+    source_table.cell(0,0).text = "S.No"
     source_table.cell(0,1).text = "Source Thesis"
     source_table.cell(0,2).text = "Author"
-    source_table.cell(0,3).text = "Percentage"
+    source_table.cell(0,3).text = "Score %"
     # Define the table style with borders
     #table.style = 'Light Shading'
     for cell in source_table.rows[0].cells:
@@ -225,4 +252,16 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
         
         for cell in source_table.rows[i].cells:
             cell.paragraphs[0].runs[0].font.color.rgb = RGBColor(color[i-1][0], color[i-1][1], color[i-1][2])
+            cell.paragraphs[0].runs[0].font.size = Pt(10)
+    for row in source_table.rows:
+        # Set widths for the cells individually
+        row.cells[0].width = Inches(0.5)
+        row.cells[0].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT  
+        row.cells[1].width = Inches(3.2)  
+        row.cells[1].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT    
+        row.cells[2].width = Inches(1.5)  
+        row.cells[2].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT  
+        row.cells[3].width = Inches(0.8) 
+        row.cells[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.LEFT  
+        
     doc.save('doc_modified.docx')
