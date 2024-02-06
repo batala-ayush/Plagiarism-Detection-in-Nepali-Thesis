@@ -11,9 +11,12 @@ from docx import Document
 
 from .ngram_similarity import compute_ngram_similarity,generate_n_grams
 from .fingerprint_similarity import compute_fingerprint_similarity,generate_fingerprint_sets
-from .word_similarity import compute_word_similarity,generate_word_sim_sets
+from .word_similarity import compute_word_similarity,generate_word_sim_sets,get_all_synonyms,find_pos_tag
 from .tfidf_similarity import compute_tfidfsimilarity
 import time
+import pprint
+import ast
+#import threading
 
 
 
@@ -25,7 +28,18 @@ from .highlight_paragraphs import highlight_paragraph
 
 
 def homepage(request):
-    return render(request, 'plag_check.html')
+    return render(request, 'index.html')
+
+def synset(request):
+    
+    
+    return render(request,'synset.html')
+
+def upload_text(request):
+    return render(request,'text.html')
+
+def pos_tagger(request):
+    return render(request,'pos.html')
     
 def thesis_upload_page(request):
     return render(request, 'thesis_upload.html')
@@ -45,13 +59,13 @@ def thesis_upload_succesfull_page(request):
         #print(got_thesis_file)
         print(input_paragraphs) 
 
-        #import pprint
-        #input_paragraphs_string = pprint.pformat(input_paragraphs)
+        
+        input_paragraphs_string = pprint.pformat(input_paragraphs)
         #import ast
         #input_paragraphs_after = ast.literal_eval(input_paragraphs_string)
         #if input_paragraphs == input_paragraphs_after:
         #    print(True)
-        thesis_data = thesis_docx.objects.create(thesis = got_thesis_file,author = got_author_name,paragraphs = input_paragraphs)
+        thesis_data = thesis_docx.objects.create(thesis = got_thesis_file,author = got_author_name,paragraphs = input_paragraphs_string)
         thesis_data.save()
         return HttpResponse("Thesis Uploaded Sucessfully")
     
@@ -106,18 +120,17 @@ def plagiarism_check(request):
             #document = Document(docx_file.thesis)
             #paragraphs = [para.text for para in document.paragraphs]
             #para ={"paragraphs":[[generate_n_grams(para.text.strip()),generate_fingerprint_sets(para.text.strip()),generate_word_sim_sets(para.text.strip()),para.text.strip()] for para in document.paragraphs if para.text.strip() and len(para.text.strip().split())>5],"source":{'name':docx_file.thesis.name,'author':docx_file.author}}  # Filter out empty or whitespace paragraphs
-            para ={"paragraphs":docx_file.paragraphs,"source":{'name':docx_file.thesis.name,'author':docx_file.author}}  # Filter out empty or whitespace paragraphs
-
+            para ={"paragraphs":ast.literal_eval(docx_file.paragraphs),"source":{'name':docx_file.thesis.name,'author':docx_file.author}}  # Filter out empty or whitespace paragraphs
+            
             #paragraphs = get_paragraphs_from_word_file(document)
             paragraphs_list.append(para)
         
         
 
-
         plagiarised_paragraphs =[]
         # Loop through both lists simultaneously and call the function
         for para1 in input_paragraphs:
-           
+        
             #paragraphs_list_counter =0
             for para2_group in paragraphs_list:
                 max_avg_feature_sim =0
@@ -151,20 +164,10 @@ def plagiarism_check(request):
                     #asma lekhne sentence wala code
                     #
                 is_label_one = 0
-                #paragraphs_list_counter = paragraphs_list_counter + 1
-            #         print(para1)
-            #         print("-----")
-            #         print(para2)
-            #         print("label: ")
-            #         print(label)
-            #     print("changeeeeeeeeeeee1111111")
-            # print("changeeeeeeeeeeee22222222")
-        #print(plagiarised_paragraphs)
-        #return render(request, 'try.html', {'paragraphs_list': paragraphs_list})
-        #for highlighting docx
-        #output_file_path = "highlighted_document.docx"  # Replace with the desired output file path
-        #target_paragraphs = plagiarised_paragraphs
-        #process_plagiarized_paragraphs(sus_document, output_file_path, target_paragraphs)
+                
+        
+        
+        
         final_plagiarised_paragraphs = {}
         for entry in plagiarised_paragraphs:
             paragraph = entry['paragraph']
@@ -221,7 +224,7 @@ def plagiarism_check(request):
         print("--------------------------")
 
 
-        print(input_paragraphs[0])
+        #print(input_paragraphs[0])
         
         #context = {'result_list': similarity_data}
         #return render(request, 'try1.html', context)

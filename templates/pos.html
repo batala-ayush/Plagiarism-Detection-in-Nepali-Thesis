@@ -1,0 +1,96 @@
+<!-- Page that displays the synonyms for the word
+A input text field 
+submit button 
+a list of synonyms for the word -->
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Detector</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <header class="bg-white shadow py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-xl font-semibold text-gray-900"> <a href="{% url 'home_page' %}">Plagiarism Detector </a> </h1>
+            <nav class="flex space-x-4">
+                <a href="{% url 'synset' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Synset</a>
+                <a href="{% url 'upload_text' %}"class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Upload Text</a>
+                <a href="{% url 'pos_tagger' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">POS Tagger</a>
+            </nav>
+        </div>
+    </header>
+    <main class="mt-20 flex-grow min-h-screen">
+            <div class="max-w-4xl mx-auto py-12">
+                <h2 class="text-2xl font-bold text-center mb-8">Find Parts of Speech</h2>
+                <form id="posForm" class="flex flex-col items-center gap-4">
+                    <input type="text" id="wordInput" placeholder="Enter a sentence..." class="form-input mt-1 block w-full px-4 py-2 bg-white border shadow-sm border-gray-300 placeholder-gray-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 rounded-lg sm:text-sm" required>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors">Submit</button>
+                </form>
+                <div id="synonymResults" class="mt-8 text-center">
+                    <!-- Synonyms will be inserted here -->
+                </div>
+            </div>
+        </main>
+    <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+        <p>Contact us at <a href="mailto:info@nepaliplagiarismdetector.com" class="underline">info@plagiarismdetector.com</a></p>
+        <p class="text-xs mt-2">
+            This project is open-source and available under the <a href="https://opensource.org/licenses/MIT" class="underline" target="_blank" rel="noopener noreferrer">MIT License</a>.
+        </p>
+    </footer>
+    
+</body>
+</html>
+<script>
+    document.getElementById('posForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const sentence = document.getElementById('wordInput').value.trim();
+        
+        // Simulating the splitting of the input sentence into words
+        // Note: This simplistic split method does not account for punctuation.
+        const words = sentence.split(/\s+/);
+    
+        // Placeholder for processing each word to assign a POS tag
+        // In a real application, you would use an NLP library or an API call here.
+        const wordsWithPosTags = words.map(word => {
+            // Simulate POS tagging
+            // This is where you'd dynamically determine the POS tag based on the word
+            // For demonstration, assign random POS tags (just as an example)
+            const posTags = ["Noun", "Verb", "Adjective", "Adverb"];
+            const pos = posTags[Math.floor(Math.random() * posTags.length)]; // Randomly select a POS tag
+            return { word: word, pos: pos };
+        });
+    
+        // Generate the HTML for the table
+        let tableHtml = `
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full mt-4 shadow-lg bg-white">
+                    <thead class="bg-blue-500 text-white">
+                        <tr>
+                            <th class="px-4 py-2">Word</th>
+                            <th class="px-4 py-2">POS Tag</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">`;
+    
+        // Populate table rows with words and their POS tags
+        wordsWithPosTags.forEach((item, index) => {
+            const rowClass = index % 2 === 0 ? 'bg-gray-100' : 'bg-white';
+            tableHtml += `
+                <tr class="${rowClass}">
+                    <td class="border px-4 py-2">${item.word}</td>
+                    <td class="border px-4 py-2">${item.pos}</td>
+                </tr>`;
+        });
+    
+        // Close the table HTML string
+        tableHtml += `</tbody></table></div>`;
+    
+        // Update the UI with the constructed table
+        document.getElementById('synonymResults').innerHTML = tableHtml;
+    });
+    </script>
+    

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Detector</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col h-full">
+    <header class="bg-white shadow py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-xl font-semibold text-gray-900"> <a href="{% url 'home_page' %}">Plagiarism Detector </a> </h1>
+            <nav class="flex space-x-4">
+                <a href="{% url 'synset' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Synset</a>
+                <a href="{% url 'upload_text' %}"class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Upload Text</a>
+                <a href="{% url 'pos_tagger' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">POS Tagger</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mt-20 flex-grow min-h-screen">
+        <form id="upload-form" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="home" class="bg-white shadow-sm p-6 rounded-lg" style="min-height: 96px;">
+                <h2 class="text-lg font-semibold text-gray-800">Check plagiarism in your thesis with advanced AI technology.</h2>
+                <p class="mt-2">Upload your document below to begin the analysis.</p>
+                <div class="mt-4">
+                    <label id="drop_zone" class="flex flex-col items-center px-4 py-12 bg-blue-100 rounded-lg border-2 border-blue-300 border-dashed cursor-pointer">
+                        <span class="px-4 py-2 bg-blue-500 text-white rounded shadow">Upload from PC</span>
+                        <input id="file-upload" type="file" class="hidden" accept=".doc,.docx" onchange="uploadFiles(event)"/>
+                        <p id="file-upload-feedback" class="mt-2">or Drag files here</p>
+                    </label>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <!-- <button type="submit" id="submit-btn" class="px-4 py-2 bg-blue-500 text-white rounded shadow" onsubmit="checkFileUploaded(event)">Submit</button> -->
+                    <button type="submit" id="submit-btn" class="px-4 py-2 bg-blue-500 text-white rounded shadow">Submit</button>
+                </div>
+            </section>
+        </form>
+    </main>
+    <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+        <p>Contact us at <a href="mailto:info@nepaliplagiarismdetector.com" class="underline">info@plagiarismdetector.com</a></p>
+        <p class="text-xs mt-2">
+            This project is open-source and available under the <a href="https://opensource.org/licenses/MIT" class="underline" target="_blank" rel="noopener noreferrer">MIT License</a>.
+        </p>
+    </footer>
+    
+</body>
+</html>
+
+
+<script>
+    // Basic JavaScript to handle file drag and drop
+    
+    function handleDragOver(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    }
+    
+    function handleFileSelect(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    
+        var files = e.dataTransfer.files; // Array of all files
+        for (var i = 0, file; file = files[i]; i++) {
+            updateUIAfterUpload(file); // Call the update UI function
+        }
+    }
+    
+    function uploadFiles(event) {
+        var files = event.target.files;
+        for (var i = 0, file; file = files[i]; i++) {
+            updateUIAfterUpload(file); // Call the update UI function
+        }
+    }
+    function updateUIAfterUpload(file) {
+        // Simulate an upload process
+        console.log('Uploading file', file.name);
+        // After "uploading", update the UI
+        document.getElementById('file-upload-feedback').textContent = `Uploaded ${file.name}`;
+    }
+    
+    // Setup the listeners for the drag and drop zone
+    var dropZone = document.getElementById('drop_zone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+
+    document.getElementById('upload-form').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('file-upload');
+    if (fileInput.files.length === 0) {
+        alert('Please upload a file before submitting.');
+        e.preventDefault(); // Prevent the form from submitting
+    } else {
+        // If you're handling the form submission via JavaScript and AJAX, 
+        // you might submit the form data here and then navigate on success.
+        // For demonstration, I'm showing an alert and then navigating directly.
+        
+        alert('File is uploaded, now submitting...');
+        
+        // Assuming the file upload and any associated checks are handled synchronously
+        // or you're not doing AJAX submission:
+        // Navigate to checked.html after showing the upload confirmation.
+        window.location.href = 'checked.html';
+    }
+});
+
+
+    </script>

@@ -109,15 +109,15 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
             #print(database_para)
             #print('-----------------')
             #print(target_paragraph)
-            print()
+            #print()
             #count = count + 1
             #print(target_paragraph)
-            print("\n")
+            ##print("\n")
             
             # Iterate through paragraphs to find the paragraph containing the specific text
             for paragraph in doc.paragraphs:
                 #print(paragraph.text)
-                print("\n")
+                #print("\n")
                 # Search for the target text within the paragraph
                 if input_para in paragraph.text:
                     para_text = paragraph.text
@@ -234,7 +234,7 @@ def highlight_paragraph(final_plagiarised_paragraphs_grouped_sources,doc,docx_fi
     source_table.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
     print(number_of_source)
-    source_table.cell(0,0).text = "S.No"
+    source_table.cell(0,0).text = "S.N"
     source_table.cell(0,1).text = "Source Thesis"
     source_table.cell(0,2).text = "Author"
     source_table.cell(0,3).text = "Score %"

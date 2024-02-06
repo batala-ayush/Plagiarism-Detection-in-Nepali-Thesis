@@ -415,7 +415,7 @@ def jaccard_similarity_modified(paragraph1, paragraph2):
     return result
 
 
-def generate_word_sim_sets(paragraph):
+def find_pos_tag(paragraph):
     sentences = sentence_tokenize(paragraph)
     
     tok_sentences = word_tokenize(sentences)
@@ -425,6 +425,12 @@ def generate_word_sim_sets(paragraph):
     tagged_sentences = pos_tag(stemmed_tok_sentences)
     
     sus_paragraph = merge_sentences(tagged_sentences)
+    return sus_paragraph
+
+
+def generate_word_sim_sets(paragraph):
+    
+    sus_paragraph = find_pos_tag(paragraph)
     
     filtered_paragraph = [(word, pos) for word, pos in sus_paragraph if word not in stopwords_list and word not in punctuations]
 
@@ -434,11 +440,14 @@ def generate_word_sim_sets(paragraph):
 
 
 
-def compute_word_similarity(filtered_sus_paragraph,filtered_ori_paragraph_database):
-    filtered_ori_paragraph = [tuple(element) for element in filtered_ori_paragraph_database ]
+
+
+
+def compute_word_similarity(filtered_sus_paragraph,filtered_ori_paragraph):
+    #filtered_ori_paragraph = [tuple(element) for element in filtered_ori_paragraph_database ]
     orginal_words_list = create_original_wordlist(filtered_ori_paragraph)
     modified_sus_paragraph = modify_suspicious_paragraph(filtered_sus_paragraph,orginal_words_list)
-    print(modified_sus_paragraph)
+    #print(modified_sus_paragraph)
     jac_similarity_mod = jaccard_similarity_modified(modified_sus_paragraph,filtered_ori_paragraph)
     result = round(jac_similarity_mod,3)
     return result

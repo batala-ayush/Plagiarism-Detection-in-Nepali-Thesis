@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Detector</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col h-full">
+    <header class="bg-white shadow py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-xl font-semibold text-gray-900"> <a href="{% url 'home_page' %}">Plagiarism Detector </a> </h1>
+            <nav class="flex space-x-4">
+                <a href="{% url 'synset' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Synset</a>
+                <a href="{% url 'upload_text' %}"class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Upload Text</a>
+                <a href="{% url 'pos_tagger' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">POS Tagger</a>
+            </nav>
+        </div>
+    </header>
+    <main class="mt-20 flex-grow min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section class="bg-white shadow-sm p-6 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-800">Check plagiarism in your text with advanced AI technology.</h2>
+                <p class="mt-2">Enter your text below to begin the analysis (limit 200 characters).</p>
+                <textarea id="text-upload" class="w-full p-3 border border-gray-300 rounded-lg mt-4" rows="4" placeholder="Enter your text here..." oninput="limitText(this)" maxlength="200"></textarea>
+                <div class="flex justify-between items-center mt-4">
+                    <span id="char-count" class="text-sm text-gray-600">Character count: 0/200</span>
+                    <button onclick="checkPlagiarism()" class="px-4 py-2 bg-blue-500 text-white rounded shadow">Check Text</button>
+                </div>
+            </section>
+        </div>
+    </main>
+   
+    <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+        <p>Contact us at <a href="mailto:info@nepaliplagiarismdetector.com" class="underline">info@plagiarismdetector.com</a></p>
+        <p class="text-xs mt-2">
+            This project is open-source and available under the <a href="https://opensource.org/licenses/MIT" class="underline" target="_blank" rel="noopener noreferrer">MIT License</a>.
+        </p>
+    </footer>
+    
+</body>
+</html>
+<script>
+
+
+        function limitText(textarea) {
+            const maxChars = 200;
+            const charCount = textarea.value.length;
+            if (charCount > maxChars) {
+                textarea.value = textarea.value.substring(0, maxChars);
+            }
+            document.getElementById('char-count').textContent = `Character count: ${charCount}/200`;
+        }
+
+        function checkPlagiarism() {
+            const text = document.getElementById('text-upload').value.trim();
+            if (text.length > 200) {
+                alert('Your text exceeds the character limit of 200.');
+                return;
+            }
+            if (text.length === 0) {
+                alert('Please enter some text to check for plagiarism.');
+                return;
+            }
+            // TODO: Implement the plagiarism check logic here
+            console.log('Checking the text for plagiarism...');
+        }
+   
+</script>

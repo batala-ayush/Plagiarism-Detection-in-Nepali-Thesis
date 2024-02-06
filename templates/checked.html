@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Detector - Report</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col h-full">
+    <header class="bg-white shadow py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-xl font-semibold text-gray-900"> <a href="{% url 'home_page' %}">Plagiarism Detector </a> </h1>
+            <nav class="flex space-x-4">
+                <a href="{% url 'synset' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Synset</a>
+                <a href="{% url 'upload_text' %}"class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Upload Text</a>
+                <a href="{% url 'pos_tagger' %}" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">POS Tagger</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow mt-10 min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section class="bg-white shadow-sm p-6 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-800 ">Plagiarism Report</h2>
+                
+                <!-- Plagiarism Summary -->
+                <div class="mt-4">
+                    <p>Your document has been analyzed. Here's the summary of the plagiarism check:</p>
+                    <p class="mt-2 font-bold">Plagiarism Percentage: <span class="text-red-500">25%</span></p>
+                </div>
+
+                <!-- Table of Sources -->
+                <div class="mt-6">
+                    <h3 class="font-semibold">Detected Sources</h3>
+                    <div class="mt-2 overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Source Name</th>
+                                    <th scope="col" class="px-6 py-3">Match Percentage</th>
+                                    <!-- <th scope="col" class="px-6 py-3">URL</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Example Row -->
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4">Example Source 1</td>
+                                    <td class="px-6 py-4">8%</td>
+                                    <!-- <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline">View Source</a></td> -->
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4">Example Source 2</td>
+                                    <td class="px-6 py-4">7%</td>
+                                    <!-- <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline">View Source</a></td> -->
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4">Example Source 3</td>
+                                    <td class="px-6 py-4">9%</td>
+                                    <!-- <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline">View Source</a></td> -->
+                                </tr>
+                                <!-- Repeat for other sources -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+        <p>Contact us at <a href="mailto:info@plagiarismdetector.com" class="underline">info@plagiarismdetector.com</a></p>
+        <p class="text-xs mt-2">
+            This project is open-source and available under the <a href="https://opensource.org/licenses/MIT" class="underline" target="_blank" rel="noopener noreferrer">MIT License</a>.
+        </p>
+    </footer>
+</body>
+</html>

@@ -9,16 +9,16 @@ def generate_n_grams(text):
         grams = (tokens[i],tokens[i+1])
         ngrams_list.append(grams)
         
-    return ngrams_list 
+    return set(ngrams_list) 
 
 
 
 
 def compute_ngram_similarity(ngrams1, ngrams2):
     # Convert the bigrams lists to sets
-    set1 = set(ngrams1)
-    set2_database = [tuple(bigrams) for bigrams in ngrams2]
-    set2 = set(set2_database)
+    set1 = ngrams1
+    #set2_database = [tuple(bigrams) for bigrams in ngrams2]
+    set2 = ngrams2
     #set2 = set(ngrams2)
     numerator = len(set1.intersection(set2))
     if len(set1)!=0:

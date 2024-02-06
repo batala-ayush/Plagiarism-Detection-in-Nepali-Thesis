@@ -5,4 +5,4 @@ from django.db import models
 class thesis_docx(models.Model):
     thesis = models.FileField(upload_to='thesis_files') # Uploaded files will be stored in the 'thesis_files/' directory inside MEDIA_ROOT
     author = models.CharField(max_length=255)
-    paragraphs = models.JSONField()
+    paragraphs = models.TextField()

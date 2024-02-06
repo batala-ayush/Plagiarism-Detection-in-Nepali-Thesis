@@ -18,20 +18,22 @@ def winnowing(text, k, w):
         return md5_hash.hexdigest()
 
     def generate_shingles(text, k):
-        return {text[i:i+k] for i in range(len(text) - k + 1)}
+        return [text[i:i+k] for i in range(len(text) - k + 1)]
 
     def winnow(shingles, w):
         min_hash_positions = []
-        shingles_list = list(shingles)
+        
         for i in range(len(shingles) - w + 1):
-            window = shingles_list[i:i+w]
+            window = shingles[i:i+w]
             min_hash = min((hash_shingle(shingle) for shingle in window))
             min_hash_positions.append(min_hash)
         return min_hash_positions
 
     shingles = generate_shingles(text, k)
     winnowed_hashes = winnow(shingles, w)
-    return winnowed_hashes
+    winnowed_hashes_set = set(winnowed_hashes)
+    return winnowed_hashes_set
+    
 
 def generate_fingerprint_sets(text1):
     shingle_length = 5
